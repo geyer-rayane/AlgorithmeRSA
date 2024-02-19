@@ -1,15 +1,15 @@
-package algorithmersa;
+package algorithmRsa;
 
 import java.util.ArrayList;
 
 public class Prime {
 
-	/* Asking n and returns if n is prime or not */
-    public static boolean isPrime(int n) {
+    /* Asking n and returns if n is prime or not */
+    public static boolean isPrime(long n) {
         if (n <= 1) {
             return false;
         }
-        for (int i = 2; i <= Math.sqrt(n); i++) {
+        for (long i = 2; i * i <= n; i++) {
             if (n % i == 0) {
                 return false;
             }
@@ -18,14 +18,13 @@ public class Prime {
     }
     
     /* Asking n and returns primes less than n */
-    public static ArrayList<Integer> getListOfPrimesUntilN(int n) {
-        ArrayList<Integer> primes = new ArrayList<>();
-        for (int i = 2; i <= n; i++) {
+    public static ArrayList<Long> getListOfPrimesUntilN(long n) {
+        ArrayList<Long> primes = new ArrayList<>();
+        for (long i = 2; i <= n; i++) {
             if (isPrime(i)) {
                 primes.add(i);
             }
         }
         return primes;
     }
-
 }
