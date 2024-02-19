@@ -2,6 +2,8 @@ package algorithmRsa;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 public class Main {
 	public static void main(String[] args) {
@@ -28,10 +30,9 @@ public class Main {
 		 */
 
 		ArrayList<Long> testList = new ArrayList<Long>();
-		List<Long> numbers = List.of(9197L, 6284L, 12836L, 8709L, 4584L, 10239L, 11553L, 4584L, 7008L, 12523L, 9862L, 356L, 5356L,
-		        1159L, 10280L, 12523L, 7506L, 6311L);
+		List<Long> numbers = List.of(9197L, 6284L, 12836L, 8709L, 4584L, 10239L, 11553L, 4584L, 7008L, 12523L, 9862L,
+				356L, 5356L, 1159L, 10280L, 12523L, 7506L, 6311L);
 		testList = new ArrayList<>(numbers);
-
 
 		ArrayList<Long> publicKeyList = new ArrayList<Long>();
 		publicKeyList.add(12413L);
@@ -47,20 +48,55 @@ public class Main {
 		/*
 		 * Question 2 Public key : (e=163119273;n=755918011); Encrypted Message :
 		 * [671828605, 407505023, 288441355, 679172842, 180261802]
+		 * 
+		 * 
+		 * ArrayList<Long> testList2 = new ArrayList<Long>(); List<Long> numbers2 =
+		 * List.of(671828605L, 407505023L, 288441355L, 679172842L, 180261802L);
+		 * testList2 = new ArrayList<>(numbers2);
+		 * 
+		 * ArrayList<Long> publicKeyList2 = new ArrayList<Long>();
+		 * publicKeyList2.add(163119273L); publicKeyList2.add(755918011L);
+		 * 
+		 * ArrayList<Long> encryptedList2 = Algorithm.getEncryptionList(testList2,
+		 * publicKeyList2); System.out.println("Encrypted list" + encryptedList2);
+		 * ArrayList<Long> decryptedList2 = Algorithm.getDecryptionList(encryptedList2,
+		 * publicKeyList2); System.out.println("Decrypted list" + decryptedList2);
 		 */
 
-		ArrayList<Long> testList2 = new ArrayList<Long>();
-		List<Long> numbers2 = List.of(671828605L, 407505023L, 288441355L, 679172842L, 180261802L);
-		testList2 = new ArrayList<>(numbers2);
+		/* Question 3 */
 
-		ArrayList<Long> publicKeyList2 = new ArrayList<Long>();
-		publicKeyList2.add(163119273L);
-		publicKeyList2.add(755918011L);
+		/* Générer un couple clé publique clé privée */
 
-		ArrayList<Long> encryptedList2 = Algorithm.getEncryptionList(testList2, publicKeyList2);
-		System.out.println("Encrypted list" + encryptedList2);
-		ArrayList<Long> decryptedList2 = Algorithm.getDecryptionList(encryptedList2, publicKeyList2);
-		System.out.println("Decrypted list" + decryptedList2);
+		Key getTheKeys = new Key();
+		int n = 187;
+		ArrayList<Long> publicKey3 = getTheKeys.getPublicKey(n);
+		ArrayList<Long> privateKey3 = getTheKeys.getPrivateKey(n);
+
+		System.out.println("Public and private key : " + publicKey3 + " " + privateKey3);
+
+		/* Calcul taille du bloc */
+
+		System.out.println("Nombre de blocs : " + Algorithm.getNumberOfBloc(n));
+		
+		/* Décomposer le message par bloc */
+		
+		String message = "ENVOYER" ;
+		ArrayList<String> messageDecomposition = Algorithm.getDecomposition(message,n) ;
+		System.out.println("Décomposition message par bloc : " + messageDecomposition);
+		
+		/* Transformer le message lettre en chiffre */
+		
+		ArrayList<Long> messageDecompositionConverted = Algorithm.getConversion(messageDecomposition,n) ;
+		System.out.println("Message crypté par bloc : " + messageDecompositionConverted);
+
+		/* Décrypter le message */
+		
+		System.out.println("test : " + Algorithm.getDecryption(106, n)) ;
+
+		 
+		System.out.println("test : " + Algorithm.getDecryptionList(messageDecompositionConverted, n)) ;
+		
+		
 
 	}
 
