@@ -2,66 +2,143 @@ package algorithmRsa;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
-public class Main {
-	public static void main(String[] args) {
+public class Algorithm {
 
-		/* Question 1 a : generate public and private keys */
-		Key key = new Key();
-		ArrayList<Long> publicKey = key.getPublicKey(187);
-		ArrayList<Long> privateKey = key.getPrivateKey(187);
-		System.out.println("Public and private keys : " + publicKey + privateKey);
+	public static Map<Character, Integer> alphabet = Map.ofEntries(Map.entry('A', 0), Map.entry('B', 1),
+			Map.entry('C', 2), Map.entry('D', 3), Map.entry('E', 4), Map.entry('F', 5), Map.entry('G', 6),
+			Map.entry('H', 7), Map.entry('I', 8), Map.entry('J', 9), Map.entry('K', 10), Map.entry('L', 11),
+			Map.entry('M', 12), Map.entry('N', 13), Map.entry('O', 14), Map.entry('P', 15), Map.entry('Q', 16),
+			Map.entry('R', 17), Map.entry('S', 18), Map.entry('T', 19), Map.entry('U', 20), Map.entry('V', 21),
+			Map.entry('W', 22), Map.entry('X', 23), Map.entry('Y', 24), Map.entry('Z', 25), Map.entry('_', 26),
+			Map.entry('.', 27), Map.entry('?', 28), Map.entry('€', 29), Map.entry('0', 30), Map.entry('1', 31),
+			Map.entry('2', 32), Map.entry('3', 33), Map.entry('4', 34), Map.entry('5', 35), Map.entry('6', 36),
+			Map.entry('7', 37), Map.entry('8', 38), Map.entry('9', 39));
 
-		/*
-		 * Question 1 b : encrypt and decrypt a number like a message with RSA algorithm
-		 */
-		long testMessage = 125;
-		long encryptedMessage = Algorithm.getEncryption(testMessage, publicKey);
-		System.out.println("Encrypted message : " + encryptedMessage);
-		long decryptedMessage = Algorithm.getDecryption(encryptedMessage, privateKey);
-		System.out.println("Decrypted message : " + decryptedMessage);
+	public static Map<Integer, Character> alphabetReversed = Map.ofEntries(Map.entry(0, 'A'), Map.entry(1, 'B'),
+			Map.entry(2, 'C'), Map.entry(3, 'D'), Map.entry(4, 'E'), Map.entry(5, 'F'), Map.entry(6, 'G'),
+			Map.entry(7, 'H'), Map.entry(8, 'I'), Map.entry(9, 'J'), Map.entry(10, 'K'), Map.entry(11, 'L'),
+			Map.entry(12, 'M'), Map.entry(13, 'N'), Map.entry(14, 'O'), Map.entry(15, 'P'), Map.entry(16, 'Q'),
+			Map.entry(17, 'R'), Map.entry(18, 'S'), Map.entry(19, 'T'), Map.entry(20, 'U'), Map.entry(21, 'V'),
+			Map.entry(22, 'W'), Map.entry(23, 'X'), Map.entry(24, 'Y'), Map.entry(25, 'Z'), Map.entry(26, '_'),
+			Map.entry(27, '.'), Map.entry(28, '?'), Map.entry(29, '€'), Map.entry(30, '0'), Map.entry(31, '1'),
+			Map.entry(32, '2'), Map.entry(33, '3'), Map.entry(34, '4'), Map.entry(35, '5'), Map.entry(36, '6'),
+			Map.entry(37, '7'), Map.entry(38, '8'), Map.entry(39, '9'));
 
-		/*
-		 * Question 2 a : [9197, 6284, 12836, 8709, 4584, 10239, 11553, 4584, 7008,
-		 * 12523, 9862, 356, 5356, 1159, 10280, 12523, 7506, 6311] encrypted with
-		 * (e=12413 ; n=13289)
-		 */
+	public static long modularExponentiation(long base, long exponent, long modulus) {
+		if (modulus == 1)
+			return 0;
+		long result = 1;
+		base = base % modulus;
+		while (exponent > 0) {
+			if (exponent % 2 == 1) {
+				result = (result * base) % modulus;
+			}
+			exponent = exponent >> 1;
+			base = (base * base) % modulus;
+		}
+		return result;
+	}
 
-		ArrayList<Long> testList = new ArrayList<Long>();
-		List<Long> numbers = List.of(9197L, 6284L, 12836L, 8709L, 4584L, 10239L, 11553L, 4584L, 7008L, 12523L, 9862L, 356L, 5356L,
-		        1159L, 10280L, 12523L, 7506L, 6311L);
-		testList = new ArrayList<>(numbers);
+	public static long getEncryption(long message, ArrayList<Long> publicKey) {
+		double encryptedMessage = modularExponentiation(message, publicKey.get(0), publicKey.get(1));
+		return (long) encryptedMessage;
+	}
 
-
-		ArrayList<Long> publicKeyList = new ArrayList<Long>();
-		publicKeyList.add(12413L);
-		publicKeyList.add(13289L);
-
-		ArrayList<Long> encryptedList = Algorithm.getEncryptionList(testList, publicKeyList);
-		System.out.println("Encrypted list" + encryptedList);
-		ArrayList<Long> decryptedList = Algorithm.getDecryptionList(encryptedList, publicKeyList);
-		System.out.println("Decrypted list" + decryptedList);
-
-		/* Question 2 b Complexity quadratic O(n**2) */
-
-		/*
-		 * Question 2 Public key : (e=163119273;n=755918011); Encrypted Message :
-		 * [671828605, 407505023, 288441355, 679172842, 180261802]
-		 */
-
-		ArrayList<Long> testList2 = new ArrayList<Long>();
-		List<Long> numbers2 = List.of(671828605L, 407505023L, 288441355L, 679172842L, 180261802L);
-		testList2 = new ArrayList<>(numbers2);
-
-		ArrayList<Long> publicKeyList2 = new ArrayList<Long>();
-		publicKeyList2.add(163119273L);
-		publicKeyList2.add(755918011L);
-
-		ArrayList<Long> encryptedList2 = Algorithm.getEncryptionList(testList2, publicKeyList2);
-		System.out.println("Encrypted list" + encryptedList2);
-		ArrayList<Long> decryptedList2 = Algorithm.getDecryptionList(encryptedList2, publicKeyList2);
-		System.out.println("Decrypted list" + decryptedList2);
+	public static long getDecryption(long encryptedMessage, ArrayList<Long> privateKey) {
+		double decryptedMessage = modularExponentiation(encryptedMessage, privateKey.get(0), privateKey.get(1));
+		return (long) decryptedMessage;
 
 	}
 
+	public static ArrayList<Long> getEncryptionList(ArrayList<Long> listMessage, ArrayList<Long> publicKey) {
+		ArrayList<Long> encryptedList = new ArrayList<Long>();
+		for (long message : listMessage) {
+			encryptedList.add(getEncryption(message, publicKey));
+		}
+		return encryptedList;
+	}
+
+	public static ArrayList<Long> getDecryptionList(ArrayList<Long> listMessage, ArrayList<Long> publicKey) {
+		ArrayList<Long> decryptedList = new ArrayList<Long>();
+		Key key = new Key();
+		ArrayList<Long> privateKey = key.getPrivateKeyWithPublicKey(publicKey);
+		for (long message : listMessage) {
+			decryptedList.add(getDecryption(message, privateKey));
+		}
+		return decryptedList;
+	}
+
+	public static double getNumberOfBloc(long n) {
+		double num = Math.log(n) / Math.log(2);
+		double den = Math.log(40) / Math.log(2);
+		return Math.ceil(num / den);
+	}
+
+	public static ArrayList<String> getDecomposition(String message, long l) {
+		double n = getNumberOfBloc(l);
+		ArrayList<String> decomposedList = new ArrayList<>();
+		for (int i = 0; i < message.length(); i += n) {
+			double endIndex = Math.min(i + n, message.length());
+			decomposedList.add(message.substring(i, (int) endIndex));
+		}
+		return decomposedList;
+	}
+
+	public static ArrayList<Long> getConversion(ArrayList<String> message, long n) {
+		ArrayList<Long> listConverted = new ArrayList<Long>();
+
+		for (String str : message) {
+			long value = 0;
+			int power = str.length() - 1;
+
+			for (char c : str.toCharArray()) {
+				int digit = alphabet.get(c);
+				value = (value * 40 + digit) % n;
+			}
+
+			listConverted.add(value);
+		}
+
+		return listConverted;
+	}
+	
+	
+	/* Erreur ici mauvais decryptage */
+	public static String getDecryption(long cryptedMessage, long n) {
+		StringBuilder decryptedMessage = new StringBuilder();
+		double lenBlock = getNumberOfBloc(n);
+		long base = 40; // Base utilisée pour la conversion
+
+		// Pour chaque bloc
+		for (int i = 0; i < lenBlock; i++) {
+			long currentBlock = cryptedMessage % (long) Math.pow(base, i + 1);
+
+			// Pour chaque coefficient
+			while (currentBlock > 0) {
+				long coefficient = currentBlock % base;
+				decryptedMessage.insert(0, alphabetReversed.get((int) coefficient));
+				currentBlock /= base;
+			}
+
+			// Décaler le message crypté vers la droite pour passer au bloc suivant
+			cryptedMessage /= (long) Math.pow(base, i + 1);
+		}
+
+		return decryptedMessage.toString();
+	}
+
+	public static String getDecryptionList(ArrayList<Long> listCryptedMessage, long n)
+	{
+		StringBuilder messageDecrypted = new StringBuilder() ;
+		for (long message : listCryptedMessage)
+		{
+			messageDecrypted.append(getDecryption(message,n)) ;
+		}
+		
+		return messageDecrypted.toString() ;
+	}
+	
 }
