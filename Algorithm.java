@@ -1,4 +1,4 @@
-package algorithmRsa;
+package algorithmersa;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,24 +88,24 @@ public class Algorithm {
 	}
 
 	public static ArrayList<Long> getConversion(ArrayList<String> message, long n) {
-		ArrayList<Long> listConverted = new ArrayList<Long>();
+        ArrayList<Long> listConverted = new ArrayList<>();
 
-		for (String str : message) {
-			long value = 0;
-			int power = str.length() - 1;
+        for (String str : message) {
+            long value = 0;
+            int power = str.length() - 1;
 
-			for (char c : str.toCharArray()) {
-				int digit = alphabet.get(c);
-				value = (value * 40 + digit) % n;
-			}
+            for (char c : str.toCharArray()) {
+                int digit = alphabet.get(c);
+                value += digit * (long) Math.pow(40, power);
+                power--;
+            }
 
-			listConverted.add(value);
-		}
+            listConverted.add(value);
+        }
 
-		return listConverted;
-	}
-	
-	
+        return listConverted;
+    }
+
 	/* Erreur ici mauvais decryptage */
 	public static String getDecryption(long cryptedMessage, long n) {
 		StringBuilder decryptedMessage = new StringBuilder();
@@ -115,10 +115,17 @@ public class Algorithm {
 		// Pour chaque bloc
 		for (int i = 0; i < lenBlock; i++) {
 			long currentBlock = cryptedMessage % (long) Math.pow(base, i + 1);
+			if (currentBlock == 0)
+			{
+				decryptedMessage.insert(0, alphabetReversed.get((int) 0));
+
+			}
 
 			// Pour chaque coefficient
 			while (currentBlock > 0) {
 				long coefficient = currentBlock % base;
+				System.out.println("coefficient : " + coefficient + "ok") ;
+
 				decryptedMessage.insert(0, alphabetReversed.get((int) coefficient));
 				currentBlock /= base;
 			}
@@ -130,15 +137,13 @@ public class Algorithm {
 		return decryptedMessage.toString();
 	}
 
-	public static String getDecryptionList(ArrayList<Long> listCryptedMessage, long n)
-	{
-		StringBuilder messageDecrypted = new StringBuilder() ;
-		for (long message : listCryptedMessage)
-		{
-			messageDecrypted.append(getDecryption(message,n)) ;
+	public static String getDecryptionList(ArrayList<Long> listCryptedMessage, long n) {
+		StringBuilder messageDecrypted = new StringBuilder();
+		for (long message : listCryptedMessage) {
+			messageDecrypted.append(getDecryption(message, n));
 		}
-		
-		return messageDecrypted.toString() ;
+
+		return messageDecrypted.toString();
 	}
-	
+
 }
