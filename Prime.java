@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class Prime {
 
+	
     /* Asking n and returns if n is prime or not */
     public static boolean isPrime(long n) {
         if (n <= 1) {
