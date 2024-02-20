@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Collections;
 
 public class Algorithm {
 
@@ -34,47 +35,41 @@ public class Algorithm {
 		base = base % modulus;
 		while (exponent > 0) {
 			if (exponent % 2 == 1) {
-				result = (result * base) % modulus;
+				result = (result * base) % modulus; 
 			}
 			exponent = exponent >> 1;
 			base = (base * base) % modulus;
 		}
 		return result;
+	} 
+
+	public static long getEncryptionByModularExponentiation(long message, ArrayList<Long> publicKey) {
+		return modularExponentiation(message, publicKey.get(0), publicKey.get(1));
 	}
 
-	public static long getEncryption(long message, ArrayList<Long> publicKey) {
-		double encryptedMessage = modularExponentiation(message, publicKey.get(0), publicKey.get(1));
-		return (long) encryptedMessage;
-	}
-
-	public static long getDecryption(long encryptedMessage, ArrayList<Long> privateKey) {
-		double decryptedMessage = modularExponentiation(encryptedMessage, privateKey.get(0), privateKey.get(1));
-		return (long) decryptedMessage;
-
+	/* Asking a crypted message and (d,n) and returns uncrypted message */
+	public static long getDecryptionByModularExponentiation(long encryptedMessage, ArrayList<Long> privateKey) {
+		return modularExponentiation(encryptedMessage, privateKey.get(0), privateKey.get(1));
 	}
 
 	public static ArrayList<Long> getEncryptionList(ArrayList<Long> listMessage, ArrayList<Long> publicKey) {
 		ArrayList<Long> encryptedList = new ArrayList<Long>();
 		for (long message : listMessage) {
-			encryptedList.add(getEncryption(message, publicKey));
+			encryptedList.add(getEncryptionByModularExponentiation(message, publicKey));
 		}
 		return encryptedList;
 	}
 
-	public static ArrayList<Long> getDecryptionList(ArrayList<Long> listMessage, ArrayList<Long> publicKey) {
+	public static ArrayList<Long> getDecryptionList(ArrayList<Long> listMessage, ArrayList<Long> privateKey) {
 		ArrayList<Long> decryptedList = new ArrayList<Long>();
-		Key key = new Key();
-		ArrayList<Long> privateKey = key.getPrivateKeyWithPublicKey(publicKey);
 		for (long message : listMessage) {
-			decryptedList.add(getDecryption(message, privateKey));
+			decryptedList.add(getDecryptionByModularExponentiation(message, privateKey));
 		}
 		return decryptedList;
 	}
 
 	public static double getNumberOfBloc(long n) {
-		double num = Math.log(n) / Math.log(2);
-		double den = Math.log(40) / Math.log(2);
-		return Math.ceil(num / den);
+		return Math.ceil((Math.log(n) / Math.log(40)));
 	}
 
 	public static ArrayList<String> getDecomposition(String message, long l) {
@@ -88,25 +83,23 @@ public class Algorithm {
 	}
 
 	public static ArrayList<Long> getConversion(ArrayList<String> message, long n) {
-        ArrayList<Long> listConverted = new ArrayList<>();
+		ArrayList<Long> listConverted = new ArrayList<>();
+		for (String str : message) {
+			long value = 0;
+			int power = str.length() - 1;
 
-        for (String str : message) {
-            long value = 0;
-            int power = str.length() - 1;
+			for (char c : str.toCharArray()) {
+				int digit = alphabet.get(c);
+				value += digit * (long) Math.pow(40, power);
+				power--;
+			}
 
-            for (char c : str.toCharArray()) {
-                int digit = alphabet.get(c);
-                value += digit * (long) Math.pow(40, power);
-                power--;
-            }
+			listConverted.add((long) Math.pow(value, 3)  % n);
+		}
 
-            listConverted.add(value);
-        }
+		return listConverted;
+	}
 
-        return listConverted;
-    }
-
-	/* Erreur ici mauvais decryptage */
 	public static String getDecryption(long cryptedMessage, long n) {
 		StringBuilder decryptedMessage = new StringBuilder();
 		double lenBlock = getNumberOfBloc(n);
@@ -114,9 +107,9 @@ public class Algorithm {
 
 		// Pour chaque bloc
 		for (int i = 0; i < lenBlock; i++) {
+
 			long currentBlock = cryptedMessage % (long) Math.pow(base, i + 1);
-			if (currentBlock == 0)
-			{
+			if (currentBlock == 0) {
 				decryptedMessage.insert(0, alphabetReversed.get((int) 0));
 
 			}
@@ -124,8 +117,6 @@ public class Algorithm {
 			// Pour chaque coefficient
 			while (currentBlock > 0) {
 				long coefficient = currentBlock % base;
-				System.out.println("coefficient : " + coefficient + "ok") ;
-
 				decryptedMessage.insert(0, alphabetReversed.get((int) coefficient));
 				currentBlock /= base;
 			}
@@ -137,13 +128,31 @@ public class Algorithm {
 		return decryptedMessage.toString();
 	}
 
-	public static String getDecryptionList(ArrayList<Long> listCryptedMessage, long n) {
-		StringBuilder messageDecrypted = new StringBuilder();
-		for (long message : listCryptedMessage) {
-			messageDecrypted.append(getDecryption(message, n));
-		}
+	public static ArrayList<Long> getDecompositionBase40(long nombre) {
+		ArrayList<Long> listeDecomposition = new ArrayList<>();
 
-		return messageDecrypted.toString();
+		while (nombre > 0) {
+			long chiffre = nombre % 40;
+			listeDecomposition.add(chiffre);
+			nombre = nombre / 40;
+		}
+		Collections.reverse(listeDecomposition);
+		return listeDecomposition;
 	}
+
+	public static String getConversionFromListToString(ArrayList<Long> listMessage, long n) {
+	    StringBuilder originalMessage = new StringBuilder();
+
+	    for (long message : listMessage) 
+	    {
+	    		ArrayList<Long> messageSplitBase40 = getDecompositionBase40(message) ;
+	    		for (long i : messageSplitBase40)
+	    		{
+	    			originalMessage.append(alphabetReversed.get((int) i)) ;
+	    		}
+	    }
+
+	return originalMessage.toString();
+}
 
 }
