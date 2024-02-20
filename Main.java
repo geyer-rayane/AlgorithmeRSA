@@ -1,4 +1,4 @@
-package algorithmRsa;
+package algorithmersa;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +80,7 @@ public class Main {
 		
 		/* Décomposer le message par bloc */
 		
-		String message = "ENVOYER" ;
+		String message = "ENVOYER_DES_MESSAGES" ;
 		ArrayList<String> messageDecomposition = Algorithm.getDecomposition(message,n) ;
 		System.out.println("Décomposition message par bloc : " + messageDecomposition);
 		
@@ -91,9 +91,7 @@ public class Main {
 
 		/* Décrypter le message */
 		
-		System.out.println("test : " + Algorithm.getDecryption(106, n)) ;
-
-		 
+	 
 		System.out.println("test : " + Algorithm.getDecryptionList(messageDecompositionConverted, n)) ;
 		
 		
