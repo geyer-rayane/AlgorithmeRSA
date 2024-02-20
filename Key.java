@@ -34,21 +34,28 @@ public class Key {
 		return a;
 	}
 
-	/* Returns e such that e and phi(n) are primes together */
+	/* Returns e such that e and phi(n) are coprime */
 	public long getEncryptionExponent(long n) {
-		ArrayList<Long> listDivisorOfPhi = new ArrayList<Long>();
-		long phi = getPhi(n);
-		for (long i = 2; i < phi; i++) {
-			if (phi % i == 0) {
-				listDivisorOfPhi.add(i);
-			}
-		}
-		for (long e = 2; e < phi; e++) {
-			if (gcd(e, phi) == 1) {
-				return e;
-			}
-		}
-		return -1;
+	    ArrayList<Long> listDivisorOfPhi = new ArrayList<Long>();
+	    long phi = getPhi(n);
+	    for (long i = 2; i < phi; i++) {
+	        if (phi % i == 0) {
+	            listDivisorOfPhi.add(i);
+	        }
+	    }
+	    for (long e = 2; e < phi; e++) {
+	        boolean isCoprime = true;
+	        for (long divisor : listDivisorOfPhi) {
+	            if (e % divisor == 0) {
+	                isCoprime = false;
+	                break;
+	            }
+	        }
+	        if (isCoprime && gcd(e, phi) == 1) {
+	            return e;
+	        }
+	    }
+	    return -1;
 	}
 
 	/* Create public key for RSA algorithm */
@@ -65,7 +72,7 @@ public class Key {
 		long phi = getPhi(n);
 		long e = getEncryptionExponent(n);
 		for (long d = 2; d < n; d++) {
-			if (e * d % phi == 1) {
+			if ((e * d)   % phi == 1) {
 				privateKey.add(d);
 				privateKey.add(n);
 				return privateKey;
