@@ -1,4 +1,4 @@
-package algorithmRsa;
+package algorithmersa;
 
 import java.util.ArrayList;
 
