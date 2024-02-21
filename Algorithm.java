@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Collections;
+import java.math.BigInteger ;
 
 public class Algorithm {
 
@@ -44,7 +45,7 @@ public class Algorithm {
 	} 
 
 	public static long getEncryptionByModularExponentiation(long message, ArrayList<Long> publicKey) {
-		return modularExponentiation(message, publicKey.get(0), publicKey.get(1));
+		return BigInteger.valueOf(message).modPow(BigInteger.valueOf(publicKey.get(0)),BigInteger.valueOf(publicKey.get(1))).longValue() ;
 	}
 
 	/* Asking a crypted message and (d,n) and returns uncrypted message */
@@ -69,7 +70,7 @@ public class Algorithm {
 	}
 
 	public static double getNumberOfBloc(long n) {
-		return Math.ceil((Math.log(n) / Math.log(40)));
+		return Math.floor((Math.log(n) / Math.log(40)));
 	}
 
 	public static ArrayList<String> getDecomposition(String message, long l) {
@@ -82,7 +83,7 @@ public class Algorithm {
 		return decomposedList;
 	}
 
-	public static ArrayList<Long> getConversion(ArrayList<String> message, long n) {
+	public static ArrayList<Long> getConversion(ArrayList<String> message, long n, ArrayList<Long> publicKey) {
 		ArrayList<Long> listConverted = new ArrayList<>();
 		for (String str : message) {
 			long value = 0;
@@ -94,7 +95,7 @@ public class Algorithm {
 				power--;
 			}
 
-			listConverted.add((long) Math.pow(value, 3)  % n);
+			listConverted.add(modularExponentiation(value,publicKey.get(0),publicKey.get(1)));
 		}
 
 		return listConverted;
